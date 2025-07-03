@@ -2,10 +2,38 @@ fn f(t : f64 , y : f64 ) -> f64 {
     t.cos() - y
 }
 
+fn euler_solver(f : fn(f64,f64) -> f64 , t0 : f64 , y0: f64 , t_end : f64 , n : usize) -> (Vec<f64>, Vec<f64>){
+
+    let h = (t_end - t0) / n as f64 ;
+    let mut t_values = vec![t0];
+    let mut y_values = vec![y0];
+
+    let mut t = t0;
+    let mut y = y0;
+
+    for _ in 0..n {
+        y = y + h*f(t,y);
+        t = t + h;
+        t_values.push(t);
+        y_values.push(y);
+
+    }
+
+    (t_values , y_values)
+
+}
+
 
 fn main() {
-   let t = 0.0 ;
-   let y = 1.0 ;
+   let t0 = 0.0;
+   let y0 = 1.0;
+   let t_end = 5.0;
+   let n = 20;
+   
+   let (t_vals, y_vals) = euler_solver(f, t0, y0, t_end, n);
 
-    println!("f(t = {t} , y ={y}) = {}" , f(t,y)) ;
+    for (t, y) in t_vals.iter().zip(y_vals.iter()) {
+        println!("t = {:.2}, y = {:.5}", t, y);
+    }
+    
 }
