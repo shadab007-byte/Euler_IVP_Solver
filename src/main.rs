@@ -1,3 +1,8 @@
+use std::fs::File;
+use std::io::{Write, BufWriter};
+
+
+
 fn f(t : f64 , y : f64 ) -> f64 {
     t.cos() - y
 }
@@ -24,6 +29,16 @@ fn euler_solver(f : fn(f64,f64) -> f64 , t0 : f64 , y0: f64 , t_end : f64 , n : 
 }
 
 
+fn save_to_csv(t_vals: &Vec<f64>, y_vals: &Vec<f64>, filename: &str) {
+    let file = File::create(filename).expect("Unable to create file");
+    let mut writer = BufWriter::new(file);
+
+    writeln!(writer, "t,y").unwrap(); // header
+    for (t, y) in t_vals.iter().zip(y_vals.iter()) {
+        writeln!(writer, "{},{}", t, y).unwrap();
+    }
+}
+
 fn main() {
    let t0 = 0.0;
    let y0 = 1.0;
@@ -35,5 +50,9 @@ fn main() {
     for (t, y) in t_vals.iter().zip(y_vals.iter()) {
         println!("t = {:.2}, y = {:.5}", t, y);
     }
+
+     // Export to CSV
+    save_to_csv(&t_vals, &y_vals, "rust_results.csv");
+    println!("Results saved to rust_results.csv");
     
 }
